@@ -1711,6 +1711,7 @@ retry:
 
 	return 0;
 }
+EXPORT_SYMBOL(xhci_bus_suspend);
 
 /*
  * Workaround for missing Cold Attach Status (CAS) if device re-plugged in S3.
