@@ -635,7 +635,12 @@ static int __maybe_unused ci_hdrc_imx_suspend(struct device *dev)
 		}
 	}
 
-	return imx_controller_suspend(dev);
+	ret = imx_controller_suspend(dev);
+	if (ret)
+		return ret;
+
+	pinctrl_pm_select_sleep_state(dev);
+	return ret;
 }
 
 static int __maybe_unused ci_hdrc_imx_resume(struct device *dev)
@@ -643,6 +648,7 @@ static int __maybe_unused ci_hdrc_imx_resume(struct device *dev)
 	struct ci_hdrc_imx_data *data = dev_get_drvdata(dev);
 	int ret;
 
+	pinctrl_pm_select_default_state(dev);
 	ret = imx_controller_resume(dev);
 	if (!ret && data->supports_runtime_pm) {
 		pm_runtime_disable(dev);
