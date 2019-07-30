@@ -26,6 +26,7 @@
 #include <linux/platform_device.h>
 #include <linux/pm_runtime.h>
 #include <linux/regulator/consumer.h>
+#include <linux/pinctrl/consumer.h>
 #include <linux/regmap.h>
 
 #define DRV_NAME			"flexcan"
@@ -1963,6 +1964,8 @@ static int __maybe_unused flexcan_suspend(struct device *device)
 			err = flexcan_chip_disable(priv);
 			if (err)
 				return err;
+
+			pinctrl_pm_select_sleep_state(device);
 		}
 		netif_stop_queue(dev);
 		netif_device_detach(dev);
@@ -1988,6 +1991,7 @@ static int __maybe_unused flexcan_resume(struct device *device)
 			if (err)
 				return err;
 		} else {
+			pinctrl_pm_select_default_state(device);
 			err = flexcan_chip_enable(priv);
 		}
 	}
@@ -2027,6 +2031,8 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
 		err = pm_runtime_force_suspend(device);
 		if (err)
 			return err;
+
+		pinctrl_pm_select_sleep_state(device);
 	}
 
 	return 0;
@@ -2039,6 +2045,8 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
 
 	if (netif_running(dev)) {
 		int err;
+
+		pinctrl_pm_select_default_state(device);
 
 		err = pm_runtime_force_resume(device);
 		if (err)
