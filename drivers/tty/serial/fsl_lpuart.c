@@ -3,6 +3,7 @@
  *  Freescale lpuart serial port driver
  *
  *  Copyright 2012-2014 Freescale Semiconductor, Inc.
+ *  Copyright 2019 NXP
  */
 
 #if defined(CONFIG_SERIAL_FSL_LPUART_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
@@ -322,6 +323,8 @@ static const struct lpuart_soc_data ls1021a_data = {
 static const struct lpuart_soc_data ls1028a_data = {
 	.devtype = LS1028A_LPUART,
 	.iotype = UPIO_MEM32,
+	.rx_watermark = 0,
+	.rx_dma_cyclic = true,
 };
 
 static struct lpuart_soc_data imx7ulp_data = {
